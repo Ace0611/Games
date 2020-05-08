@@ -1,0 +1,19 @@
+.grid {
+    display: flex;
+    flex-flow: row wrap;
+    height: 618px;
+    width: 618px;
+    justify-content: center;
+    align-items: center;
+}
+
+.square{
+    width: 200px;
+    height: 200px;
+    border: 1px solid black;
+}
+
+.mole{
+    background-image: url('/images/mole.svg');
+    background-size: cover;
+}
