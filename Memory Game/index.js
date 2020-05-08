@@ -1,107 +1,48 @@
-document.addEventListener('DOMContentLoaded', () => {
+const square = document.querySelectorAll('.square');
+const mole = document.querySelectorAll('.mole');
+const timeLeft = document.querySelector('#time-left');
+let score = document.querySelector("#score");
+let hitPosition;
 
-    //card options
-    const cardArray = [
-        {
-            name: 'bedroom',
-            img: 'images/bedroom.jpeg'
-        },
-        {
-            name: 'bedroom',
-            img: 'images/bedroom.jpeg'
-        },
-        {
-            name: 'dwight',
-            img: 'images/dwight.png'
-        },
-        {
-            name: 'dwight',
-            img: 'images/dwight.png'
-        },
-        {
-            name: 'bhai',
-            img: 'images/bhai.jpg'
-        },
-        {
-            name: 'bhai',
-            img: 'images/bhai.jpg'
-        },
-        {
-            name: 'lucy',
-            img: 'images/lucy.jpg'
-        },
-        {
-            name: 'lucy',
-            img: 'images/lucy.jpg'
-        },
-        {
-            name: 'meme',
-            img: 'images/meme.jpg'
-        },
-        {
-            name: 'meme',
-            img: 'images/meme.jpg'
-        },
-        {
-            name: 'corona',
-            img: 'images/corona.jpg'
-        },
-        {
-            name: 'corona',
-            img: 'images/corona.jpg'
-        },
-    ]
+let result = 0
+let currentTime = timeLeft.textContent
 
-    cardArray.sort(() => 0.5 - Math.random())
-    const grid = document.querySelector('.grid');
-    let cardsChosen = []
-    let cardsChosenId = []
-    let cardsWon = [];
-    const resultDisplay = document.querySelector('#result')
+function randomSquare(){
+    square.forEach(className => {
+        className.classList.remove('mole');
+    })
+    let randomPosition = square[Math.floor(Math.random() * 9)]
+    randomPosition.classList.add('mole')
 
-    //create your board
-    function createBoard(){
-        for(let i=0; i<cardArray.length; i++){
-            var card = document.createElement('img');
-            card.setAttribute('src', 'images/click.png')
-            card.setAttribute('data-id', i)
-            card.addEventListener('click', flipCard)
-            grid.appendChild(card)
+    //assign the id of the randomPosition to hitPosition for us to use later
+    hitPosition = randomPosition.id;
+}
+
+square.forEach(id => {
+    id.addEventListener('mouseup', () => {
+        console.log("id", id.id, "hit", hitPosition)
+        if(id.id === hitPosition){
+            result += 1;
+            score.textContent = result;
         }
-    }
-
-    // check for matches
-    function checkForMatch(){
-        let cards = document.querySelectorAll('img');
-        const optionOneId = cardsChosenId[0]
-        const optionTwoId = cardsChosenId[1]
-        if(cardsChosen[0] === cardsChosen[1]){
-            alert('You found a match');
-            cards[optionOneId].setAttribute('src', 'images/blank.png')
-            cards[optionTwoId].setAttribute('src', 'images/blank.png')
-            cardsWon.push(cardsChosen)
-        } else{
-            cards[optionOneId].setAttribute('src', 'images/click.png')
-            cards[optionTwoId].setAttribute('src', 'images/click.png')
-        }
-        cardsChosen = []
-        cardsChosenId = []
-        resultDisplay.textContent = cardsWon.length;
-        if(cardsWon.length === cardArray.length/2){
-            resultDisplay.textContent = 'Congratulations! You found them all!'
-        }
-    }
-
-    //flip card
-    function flipCard(){
-        var cardId = this.getAttribute('data-id');
-        cardsChosen.push(cardArray[cardId].name)
-        cardsChosenId.push(cardId)
-        this.setAttribute('src', cardArray[cardId].img)
-        if(cardsChosen.length === 2){
-            setTimeout(checkForMatch, 500);
-        }
-    }
-
-    createBoard();
+    })
 })
+
+function moveMole(){
+    let timerId = null
+    timerId = setInterval(randomSquare, 1000)
+}
+
+moveMole()
+
+function countDown(){
+    currentTime--;
+    timeLeft.textContent = currentTime;
+
+    if(currentTime === 0){
+        clearInterval(timerId);
+        alert("GAME OVER! Your final score is " + result)
+    }
+}
+
+let timerId = setInterval(countDown, 1000);
